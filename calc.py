@@ -1,5 +1,6 @@
-def multiplication_calculator():
-    print("Welcome to the Simple Multiplication Calculator!")
+def simple_calculator():
+    print("Welcome to the Simple Calculator!")
+    print("This calculator can perform multiplication and division.")
     
     try:
         # Input the first number
@@ -8,14 +9,24 @@ def multiplication_calculator():
         # Input the second number
         num2 = float(input("Enter the second number: "))
         
-        # Perform multiplication
-        result = num1 * num2
+        # Ask the user for the operation
+        operation = input("Choose the operation (enter '*' for multiplication or '/' for division): ").strip()
         
-        # Display the result
-        print(f"The result of {num1} multiplied by {num2} is: {result}")
+        # Perform the selected operation
+        if operation == '*':
+            result = num1 * num2
+            print(f"The result of {num1} multiplied by {num2} is: {result}")
+        elif operation == '/':
+            if num2 == 0:
+                print("Error: Division by zero is not allowed!")
+            else:
+                result = num1 / num2
+                print(f"The result of {num1} divided by {num2} is: {result}")
+        else:
+            print("Invalid operation! Please enter '*' or '/'.")
     
     except ValueError:
         print("Invalid input! Please enter numeric values.")
 
 # Run the calculator
-multiplication_calculator()
+simple_calculator()
