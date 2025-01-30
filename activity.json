@@ -1,0 +1,30 @@
+[
+    {
+        "type": "variable_assignment",
+        "variable": "x",
+        "value": 10,
+        "expression": "x = 10"
+    },
+    {
+        "type": "variable_assignment",
+        "variable": "y",
+        "value": 5,
+        "expression": "y = 5"
+    },
+    {
+        "type": "calculation",
+        "expression": "x + y",
+        "result": 15
+    },
+    {
+        "type": "variable_assignment",
+        "variable": "z",
+        "value": 50,
+        "expression": "z = x * y"
+    },
+    {
+        "type": "calculation",
+        "expression": "z / 2",
+        "result": 25.0
+    }
+]
