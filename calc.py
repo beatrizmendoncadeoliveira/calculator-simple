@@ -1,5 +1,6 @@
 import json
 import os
+from fractions import Fraction
 
 # File paths
 ACTIVITY_LOG_FILE = "activity.json"
@@ -30,6 +31,23 @@ def log_activity(activity):
     
     with open(ACTIVITY_LOG_FILE, "w") as file:
         json.dump(activities, file, indent=4)
+
+def mixed_division(result):
+    """
+    Convert a decimal result to mixed division format (e.g., 2.5 -> 2 1/2).
+    """
+    if isinstance(result, float) and not result.is_integer():
+        # Convert to fraction
+        frac = Fraction(result).limit_denominator()
+        whole = frac.numerator // frac.denominator
+        remainder = frac.numerator % frac.denominator
+        
+        if whole == 0:
+            return f"{remainder}/{frac.denominator}"
+        else:
+            return f"{whole} {remainder}/{frac.denominator}"
+    else:
+        return str(result)
 
 def simple_calculator():
     print("Welcome to the Advanced Simple Calculator!")
@@ -79,11 +97,17 @@ def simple_calculator():
                 result = eval(user_input, {}, variables)
                 print(f"The result is: {result}")
                 
+                # Convert result to mixed division format if it's a division operation
+                if '/' in user_input:
+                    mixed_result = mixed_division(result)
+                    print(f"Mixed division result: {mixed_result}")
+                
                 # Log the activity
                 log_activity({
                     "type": "calculation",
                     "expression": user_input,
-                    "result": result
+                    "result": result,
+                    "mixed_result": mixed_result if '/' in user_input else None
                 })
             except Exception as e:
                 print(f"Error: Invalid expression. {e}")
