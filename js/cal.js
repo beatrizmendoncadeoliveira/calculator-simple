@@ -1,32 +1,45 @@
 const fs = require('fs');
+const path = require('path');
 
-// File paths
-const ACTIVITY_LOG_FILE = "activity.json";
-const CACHE_FILE = "cache.txt";
+// File paths using environment variables
+const ACTIVITY_LOG_FILE = process.env.ACTIVITY_LOG_FILE || path.join(__dirname, 'activity.json');
+const CACHE_FILE = process.env.CACHE_FILE || path.join(__dirname, 'cache.txt');
 
 // Load variables from the cache file if it exists
 function loadCache() {
-    if (fs.existsSync(CACHE_FILE)) {
-        const data = fs.readFileSync(CACHE_FILE, 'utf8');
-        return JSON.parse(data);
+    try {
+        if (fs.existsSync(CACHE_FILE)) {
+            const data = fs.readFileSync(CACHE_FILE, 'utf8');
+            return JSON.parse(data);
+        }
+    } catch (error) {
+        console.error(`Error loading cache: ${error.message}`);
     }
     return {};
 }
 
 // Save variables to the cache file
 function saveCache(variables) {
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(variables), 'utf8');
+    try {
+        fs.writeFileSync(CACHE_FILE, JSON.stringify(variables), 'utf8');
+    } catch (error) {
+        console.error(`Error saving cache: ${error.message}`);
+    }
 }
 
 // Log activities to a JSON file
 function logActivity(activity) {
     let activities = [];
-    if (fs.existsSync(ACTIVITY_LOG_FILE)) {
-        const data = fs.readFileSync(ACTIVITY_LOG_FILE, 'utf8');
-        activities = JSON.parse(data);
+    try {
+        if (fs.existsSync(ACTIVITY_LOG_FILE)) {
+            const data = fs.readFileSync(ACTIVITY_LOG_FILE, 'utf8');
+            activities = JSON.parse(data);
+        }
+        activities.push(activity);
+        fs.writeFileSync(ACTIVITY_LOG_FILE, JSON.stringify(activities, null, 4), 'utf8');
+    } catch (error) {
+        console.error(`Error logging activity: ${error.message}`);
     }
-    activities.push(activity);
-    fs.writeFileSync(ACTIVITY_LOG_FILE, JSON.stringify(activities, null, 4), 'utf8');
 }
 
 // Convert a decimal result to mixed division format (e.g., 2.5 -> 2 1/2)
