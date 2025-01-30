@@ -1,6 +1,7 @@
 def simple_calculator():
     print("Welcome to the Simple Calculator!")
     print("This calculator can perform multiplication and division.")
+    print("It supports both whole numbers and decimal numbers.")
     
     try:
         # Input the first number
