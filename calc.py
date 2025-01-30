@@ -49,73 +49,95 @@ def mixed_division(result):
     else:
         return str(result)
 
+def show_menu():
+    """Display the calculator menu."""
+    print("\n--- Calculator Menu ---")
+    print("1. Addition (+)")
+    print("2. Subtraction (-)")
+    print("3. Multiplication (*)")
+    print("4. Division (/)")
+    print("5. Mixed Division (e.g., 2 1/2)")
+    print("6. Exit")
+    choice = input("Choose an operation (1-6): ").strip()
+    return choice
+
 def simple_calculator():
     print("Welcome to the Advanced Simple Calculator!")
     print("This calculator can perform addition, subtraction, multiplication, and division.")
     print("It supports both whole numbers, decimal numbers, and variable substitution.")
-    print("Type 'exit' to quit.")
     
     # Load variables from cache
     variables = load_cache()
     
     while True:
-        try:
-            # Input the expression or command
-            user_input = input("Enter an expression (e.g., 'x = 10', 'x + 5', or 'exit' to quit): ").strip()
-            
-            # Exit the calculator
-            if user_input.lower() == 'exit':
-                print("Exiting the calculator. Goodbye!")
-                save_cache(variables)  # Save variables to cache before exiting
-                break
-            
-            # Handle variable assignment (e.g., "x = 10")
-            if '=' in user_input:
-                var_name, value = user_input.split('=', 1)
-                var_name = var_name.strip()
-                value = value.strip()
-                
-                try:
-                    # Evaluate the value (e.g., "x = 5 + 3")
-                    value = eval(value, {}, variables)
-                    variables[var_name] = value
-                    print(f"Variable '{var_name}' set to {value}.")
-                    
-                    # Log the activity
-                    log_activity({
-                        "type": "variable_assignment",
-                        "variable": var_name,
-                        "value": value,
-                        "expression": user_input
-                    })
-                except Exception as e:
-                    print(f"Error: Invalid expression. {e}")
-                continue
-            
-            # Evaluate the expression (e.g., "x + 5")
+        choice = show_menu()
+        
+        # Exit the calculator
+        if choice == '6':
+            print("Exiting the calculator. Goodbye!")
+            save_cache(variables)  # Save variables to cache before exiting
+            break
+        
+        # Input the expression based on the chosen operation
+        if choice in ['1', '2', '3', '4', '5']:
             try:
-                result = eval(user_input, {}, variables)
-                print(f"The result is: {result}")
+                # Input the first number or variable
+                num1 = input("Enter the first number or variable: ").strip()
+                if num1 in variables:
+                    num1 = variables[num1]
+                else:
+                    num1 = float(num1)
                 
-                # Convert result to mixed division format if it's a division operation
-                if '/' in user_input:
+                # Input the second number or variable
+                num2 = input("Enter the second number or variable: ").strip()
+                if num2 in variables:
+                    num2 = variables[num2]
+                else:
+                    num2 = float(num2)
+                
+                # Perform the chosen operation
+                if choice == '1':
+                    result = num1 + num2
+                    operation = "+"
+                elif choice == '2':
+                    result = num1 - num2
+                    operation = "-"
+                elif choice == '3':
+                    result = num1 * num2
+                    operation = "*"
+                elif choice == '4':
+                    if num2 == 0:
+                        print("Error: Division by zero is not allowed!")
+                        continue
+                    result = num1 / num2
+                    operation = "/"
+                elif choice == '5':
+                    if num2 == 0:
+                        print("Error: Division by zero is not allowed!")
+                        continue
+                    result = num1 / num2
+                    operation = "/"
                     mixed_result = mixed_division(result)
                     print(f"Mixed division result: {mixed_result}")
+                
+                # Display the result
+                print(f"The result of {num1} {operation} {num2} is: {result}")
                 
                 # Log the activity
                 log_activity({
                     "type": "calculation",
-                    "expression": user_input,
+                    "operation": operation,
+                    "num1": num1,
+                    "num2": num2,
                     "result": result,
-                    "mixed_result": mixed_result if '/' in user_input else None
+                    "mixed_result": mixed_result if choice == '5' else None
                 })
+            except ValueError:
+                print("Error: Invalid input! Please enter numeric values.")
             except Exception as e:
-                print(f"Error: Invalid expression. {e}")
-        
-        except KeyboardInterrupt:
-            print("\nExiting the calculator. Goodbye!")
-            save_cache(variables)  # Save variables to cache before exiting
-            break
+                print(f"Error: {e}")
+        else:
+            print("Invalid choice! Please choose a valid option (1-6).")
 
 # Run the calculator
 simple_calculator()
